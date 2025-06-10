@@ -1,31 +1,11 @@
 # VStream
 
-A minimal web-based video streaming application built with [Flask](https://flask.palletsprojects.com/).
+VStream is a minimal video streaming platform consisting of a Flask backend and a simple HTML/JS client.
 
-## Features
-
-- Lists all `.mp4` files found in `static/videos`.
-- Streams video files with support for range requests (allowing users to seek within the video).
-
-## Setup
-
-1. (Optional) Create and activate a virtual environment.
-2. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Place your `.mp4` files into the `static/videos` directory.
+- `server/` – Flask application that handles video uploads, stores metadata in a SQLite database, and streams videos to clients.
+- `client/` – Web interface for uploading and viewing videos.
 
 ## Running
 
-```bash
-python app.py
-```
-
-The application will be available at `http://localhost:5000/`.
-
-## Notes
-
-This project provides a very basic demonstration of a video streaming application. It does not implement authentication, transcoding, or advanced features found in commercial streaming services.
+1. Follow the instructions in `server/README.md` to start the backend server.
+2. Open `client/index.html` in your browser to use the client interface.

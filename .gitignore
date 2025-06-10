@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+server/videos.db
+server/static/videos/*
