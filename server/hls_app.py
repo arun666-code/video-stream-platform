@@ -36,8 +36,6 @@ def api_videos():
     return jsonify(get_videos())
 
 
-
-
 @app.route('/hls/<path:path>')
 def hls_files(path):
     directory = os.path.join(HLS_FOLDER, os.path.dirname(path))

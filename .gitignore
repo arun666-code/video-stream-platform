@@ -4,3 +4,4 @@ server/videos.db
 server/static/videos/*
 !server/static/videos/.gitkeep
 !server/static/hls/.gitkeep
+venv
