@@ -21,6 +21,7 @@ def get_videos():
     return videos
 
 
+
 @app.route('/')
 def root():
     return send_from_directory(CLIENT_FOLDER, 'index.html')
@@ -35,7 +36,7 @@ def client_files(path):
 def api_videos():
     return jsonify(get_videos())
 
-
+  
 @app.route('/hls/<path:path>')
 def hls_files(path):
     directory = os.path.join(HLS_FOLDER, os.path.dirname(path))
