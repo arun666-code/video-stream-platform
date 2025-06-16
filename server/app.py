@@ -1,34 +1,19 @@
 import os
-import sqlite3
-from flask import Flask, request, jsonify, send_file, abort, send_from_directory, redirect
-from werkzeug.utils import secure_filename
+from flask import Flask, request, jsonify, send_file, abort, send_from_directory
 
 app = Flask(__name__)
-UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'videos')
+VIDEO_FOLDER = os.path.join(app.root_path, 'static', 'videos')
 CLIENT_FOLDER = os.path.join(app.root_path, '..', 'client')
-DATABASE = os.path.join(app.root_path, 'videos.db')
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-
-def init_db():
-    with sqlite3.connect(DATABASE) as conn:
-        conn.execute(
-            'CREATE TABLE IF NOT EXISTS videos (id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT)'
-        )
-
-
-def add_video(filename: str):
-    with sqlite3.connect(DATABASE) as conn:
-        cur = conn.execute('INSERT INTO videos (filename) VALUES (?)', (filename,))
-        conn.commit()
-        return cur.lastrowid
+os.makedirs(VIDEO_FOLDER, exist_ok=True)
 
 
 def get_videos():
-    with sqlite3.connect(DATABASE) as conn:
-        cur = conn.execute('SELECT id, filename FROM videos')
-        return [{'id': row[0], 'filename': row[1]} for row in cur.fetchall()]
+    return [
+        {'id': fname, 'filename': fname}
+        for fname in os.listdir(VIDEO_FOLDER)
+        if fname.lower().endswith('.mp4')
+    ]
 
 
 @app.route('/')
@@ -46,24 +31,11 @@ def api_videos():
     return jsonify(get_videos())
 
 
-@app.route('/upload', methods=['POST'])
-def upload_video():
-    if 'video' not in request.files:
-        return jsonify({'error': 'No video part'}), 400
-    file = request.files['video']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    filename = secure_filename(file.filename)
-    path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(path)
-    add_video(filename)
-    return jsonify({'message': 'uploaded'}), 201
 
 
 @app.route('/video/<path:filename>')
 def stream_video(filename):
-    file_path = os.path.join(UPLOAD_FOLDER, filename)
+    file_path = os.path.join(VIDEO_FOLDER, filename)
     if not os.path.isfile(file_path):
         abort(404)
 
@@ -96,5 +68,4 @@ def stream_video(filename):
 
 
 if __name__ == '__main__':
-    init_db()
     app.run(host='0.0.0.0', port=5000, debug=False)
