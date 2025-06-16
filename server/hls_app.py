@@ -94,6 +94,11 @@ def hls_files(path):
         abort(404)
     return send_from_directory(directory, filename)
 
+# For serving static files from the client directory
+@app.route('/<path:path>')
+def static_proxy(path):
+    return send_from_directory(CLIENT_FOLDER, path)
+
 
 if __name__ == '__main__':
     init_db()
